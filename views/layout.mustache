@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    {{#username}}
+    <a href="/">home</a>
+    <a href="/createMessage"> create message as: {{.}}</a>
+    {{/username}}
+    {{^username}}
+    <a href="/">home</a>
+    <a href="/login">login</a>
+    <a href="signup">signup</a>
+    {{/username}}
+
+
+    {{{yield}}}
+
+    {{#username}}
+    <form class="" action="/logout" method="post">
+      <button type="submit" >logout</button>
+    </form>
+    {{/username}}
+  </body>
+</html>
