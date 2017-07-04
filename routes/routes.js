@@ -10,29 +10,50 @@ let the_user;
 let Messages;
 let user_message;
 let user_like;
-let liker;
+let liker =[];
 let name;
 
-const the_likes = function (req,res,next) {
-  models.likes.findAll({
-    include:[{
-      model: models.users,
-      as:"users"
-    }]
-  }).then(function (like) {
-    like.forEach(function (like) {
-      user_like = {
-        id: like.id,
-        messageId: like.messageId,
-        userId: like.userId,
-        likeUser: like.users.dataValues.username
-      }
-      liker.push(user_like);
-    })
+const getMessageId = function(req, res, next) {
+  models.messages.findById(req.params.messageId).then(function(action) {
+    if (action) {
+      req.action = action;
+      next();
+    } else {
+      res.status(404).send("not found");
+    }
   });
 }
 
-router.get("/", function(req, res) {
+const the_likes = function (req,res,next) {
+  liker = [];
+  models.likes.findAll({
+    where: {
+      messageId: req.params.messageId
+    }
+  }).then(function (likes) {
+    // console.log(likes);
+    likes.forEach(function (like) {
+      models.users.findById(like.userId).then(function(user) {
+        console.log('LIKER LENGTH: ',liker.length);
+        liker.push(user.dataValues.username);
+      })
+      // user_like = {
+      //   id: like.id,
+      //   messageId: like.messageId,
+      //   userId: like.userId
+      //
+      // }
+      // liker.push(user_like);
+    })
+
+    // liker.forEach(function (like) {
+    //
+    // })
+    next();
+  });
+}
+
+router.get("/",  function(req, res) {
 
   Messages = [];
   if (req.session.username) {
@@ -49,7 +70,7 @@ router.get("/", function(req, res) {
       ]
     }).then(function(messages) {
       messages.forEach(function(message) {
-        console.log(message.users);
+        // console.log(message.users);
         user_message = {
           id: message.id,
           body: message.body,
@@ -67,8 +88,8 @@ router.get("/", function(req, res) {
           message.can_delete = true;
         }
       })
-      console.log();
-      console.log();
+      // console.log();
+      // console.log();
       res.render("profile", {username: req.session.username,post: Messages , liker});
     });
   } else {
@@ -82,6 +103,10 @@ router.get("/signup", function(req, res) {
     username: req.session.username
   });
 });
+
+// router.get("/:messageId/wholiked", getMessageId, the_likes, function (req, res) {
+//   res.render("wholiked", {username: req.session.username,  likers: liker })
+// });
 
 router.get("/login", function(req, res) {
   if (req.session.username) {
@@ -99,16 +124,16 @@ router.get("/createMessage", function(req, res) {
   });
 });
 
-const getMessageId = function(req, res, next) {
-  models.messages.findById(req.params.messageId).then(function(action) {
-    if (action) {
-      req.action = action;
-      next();
-    } else {
-      res.status(404).send("not found");
-    }
-  });
-}
+// const getMessageId = function(req, res, next) {
+//   models.messages.findById(req.params.messageId).then(function(action) {
+//     if (action) {
+//       req.action = action;
+//       next();
+//     } else {
+//       res.status(404).send("not found");
+//     }
+//   });
+// }
 
 
 router.post("/signup", function(req, res) {
@@ -117,7 +142,7 @@ router.post("/signup", function(req, res) {
     password: req.body.newpassword,
   }
   models.users.create(newusers).then(function(model) {
-    console.log(model);
+    // console.log(model);
   });
   res.redirect("/login");
 
@@ -152,7 +177,7 @@ router.post("/login", function(req, res) {
         res.redirect("/");
       } else {
         messages.push("invalid username or password");
-        console.log(messages);
+        // console.log(messages);
         res.redirect("/login");
       }
 
@@ -173,7 +198,7 @@ router.post("/createMessage", function(req, res) {
     }).then(function(info) {
       if (info) {
         user = info.username;
-        console.log("the user name is:" + user);
+        // console.log("the user name is:" + user);
       }
     })
   }
@@ -197,27 +222,27 @@ router.post("/:messageId/delete", getMessageId, function(req, res) {
 
 });
 
-router.post("/:messageId/like", getMessageId, function(req, res) {
+router.post("/:messageId/like", getMessageId , the_likes , function(req, res) {
   user_message.was_liked = true;
   newLike = {
     messageId: req.params.messageId,
     userId: userId
   }
-  models.likes.create(newLike).then(function(like) {
-    user_message.likes++;
-    console.log("was_liked", user_message.was_liked);
+  models.likes.findOrCreate({where:newLike, defaults: newLike}).then(function(like) {
+
+      user_message.likes++;
+
+    // user_message.likes++;
+    // console.log("was_liked", user_message.was_liked);
 
     res.redirect("/");
-
-
-
-
-
-
   });
 });
 
+router.post("/:messageId/wholiked", getMessageId , the_likes, function (req,res) {
+   res.render("wholiked", {username: req.session.username,  likers: liker });
 
+} );
 
 
 

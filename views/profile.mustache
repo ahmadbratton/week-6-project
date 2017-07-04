@@ -11,14 +11,13 @@
   <button type="submit" name="button">Delete</button>
 </form>
 {{/can_delete}}
-{{^was_liked}}
+
 <form class="" action="/{{id}}/like" method="post">
   <button type="submit" name="button">like</button>
 </form>
-{{/was_liked}}
-{{#was_liked}}
-<button type="button" name="button">liked</button>
-{{/was_liked}}
-<p>likes:{{likes}}</p>
-{{likers}}
+
+
+<form class="" action="/{{id}}/wholiked" method="post">
+  <p><button type="submit" name="button">likes:</button>{{likes}}</p>
+</form>
 {{/post}}
