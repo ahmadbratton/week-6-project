@@ -25,7 +25,7 @@ const getMessageId = function(req, res, next) {
 }
 
 const the_likes = function (req,res,next) {
-  liker = [];
+  //  liker = [];
   models.likes.findAll({
     where: {
       messageId: req.params.messageId
@@ -240,8 +240,9 @@ router.post("/:messageId/like", getMessageId , the_likes , function(req, res) {
 });
 
 router.post("/:messageId/wholiked", getMessageId , the_likes, function (req,res) {
-   res.render("wholiked", {username: req.session.username,  likers: liker });
 
+ res.render("wholiked", {username: req.session.username,  likers: liker });
+  liker = [];
 } );
 
 

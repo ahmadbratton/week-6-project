@@ -1,7 +1,54 @@
 body{
-  background-color: beige;
+  background-color: #cdebf9;
 }
 
 .message_area{
   background-color: white;
+}
+
+.head_container{
+  background-image: url("../img/cloudbackground.jpg");
+margin-left: -5px;
+margin-top: -5px;
+}
+
+.nav{
+  display: flex;
+  height: 200px;
+  justify-content: space-around;
+
+}
+.atags{
+  margin-top: -22px;
+  font-size: 30px;
+
+}
+.atags a{
+padding: 23px;
+color: white;
+}
+
+.username{
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 10px;
+}
+.user_tag {
+
+  font-size: 25px;
+}
+
+.user_tag a{
+  color: white;
+}
+.buttons{
+  display: flex;
+}
+
+.buttons div{
+  margin: 5px;
+}
+
+.textarea{
+  margin-left: 20px;
 }

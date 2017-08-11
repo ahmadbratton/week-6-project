@@ -1,27 +1,33 @@
 <div class="profile_page">
 {{#username}}
-<h1>display_name: {{.}}</h1>
+
 {{/username}}
 
 <h1>posts</h1>
 
 {{#post}}
-<div class="message_area">
+<div class="message_area well">
 <p>message by: {{the_user}}</p>
 <p>{{body}}</p>
-{{#can_delete}}
-<form class="" action="/{{id}}/delete" method="post">
-  <button type="submit" name="button">Delete</button>
-</form>
-{{/can_delete}}
-
-<form class="" action="/{{id}}/like" method="post">
-  <button type="submit" name="button">like</button>
-</form>
-
-<form class="" action="/{{id}}/wholiked" method="post">
-  <p><button type="submit" name="button">likes:</button>{{likes}}</p>
-</form>
+<div class="buttons" >
+  <div class="delete">
+    {{#can_delete}}
+    <form class="" action="/{{id}}/delete" method="post">
+      <button type="submit" name="button">Delete</button>
+    </form>
+    {{/can_delete}}
+</div>
+<div class="like">
+  <form class="" action="/{{id}}/like" method="post">
+    <button type="submit" name="button">like</button>
+  </form>
+</div>
+<div class="">
+  <form class="" action="/{{id}}/wholiked" method="post">
+    <p><button type="submit" name="button">likes:</button>{{likes}}</p>
+  </form>
+</div>
+</div>
 </div>
 {{/post}}
 </div>
